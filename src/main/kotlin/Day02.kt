@@ -38,9 +38,24 @@ fun main() {
                 CubeSet(blue, red, green)
             }
 
-        if (sets.none { it.blue > 14 || it.red > 12 || it.green > 13 }) {
-            answer += gameId
+        var minBlueRequired = 0
+        var minRedRequired = 0
+        var minGreenRequired = 0
+
+        for (set in sets) {
+            if (set.blue > minBlueRequired) {
+                minBlueRequired = set.blue
+            }
+            if (set.red > minRedRequired) {
+                minRedRequired = set.red
+            }
+            if (set.green > minGreenRequired) {
+                minGreenRequired = set.green
+            }
         }
+
+        val power =  minBlueRequired * minRedRequired * minGreenRequired
+        answer += power
     }
 
     println(answer)
