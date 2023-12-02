@@ -34,7 +34,7 @@ fun main() {
     println("Part 2: $answer2")
 }
 
-const val SMALL_INPUT = """two1nine
+private const val SMALL_INPUT = """two1nine
 eightwothree
 abcone2threexyz
 xtwone3four
@@ -42,7 +42,7 @@ xtwone3four
 zoneight234
 7pqrstsixteen"""
 
-const val INPUT = """5ffour295
+private const val INPUT = """5ffour295
 m9qvkqlgfhtwo3seven4seven
 2vdqng1sixzjlkjvq
 5twonineeight3onefive
