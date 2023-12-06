@@ -26,6 +26,62 @@ fun main() {
         }
     }
 
+    data class SchematicNumber(val value: Int, val root: Pair<Int, Int>)
+    fun getNumberAtPos(row: Int, col: Int): SchematicNumber? {
+        val numberRegex = Regex("\\d")
+
+        val posElement = indexInput(row, col)
+        var currCol = col
+        var beforeElement = indexInput(row, col - 1)
+
+        if (posElement == null || !numberRegex.matches(posElement.toString())) return null
+
+        // Find the first position of the number first
+        while (beforeElement != null && numberRegex.matches(beforeElement.toString())) {
+            currCol -= 1
+            beforeElement = indexInput(row, currCol - 1)
+        }
+
+        val startCol = currCol
+        var element = indexInput(row, currCol)
+        var result = ""
+
+        // Then, parse the number going forwards
+        while (element != null && numberRegex.matches(element.toString())) {
+            result += element
+            currCol += 1
+            element = indexInput(row, currCol)
+        }
+
+        return SchematicNumber(result.toInt(), Pair(row, startCol))
+    }
+
+    // Returns null if not a gear
+    fun extractGearRatio(row: Int, col: Int): Int? {
+        if (indexInput(row, col) != '*') {
+            return null
+        }
+
+        val surroundingPos = arrayOf(
+            Pair(row - 1, col - 1),
+            Pair(row - 1, col),
+            Pair(row - 1, col + 1),
+            Pair(row, col - 1),
+            Pair(row, col + 1),
+            Pair(row + 1, col - 1),
+            Pair(row + 1, col),
+            Pair(row + 1, col + 1),
+        )
+
+        val adjacentPartNumbers = surroundingPos.mapNotNull {
+            getNumberAtPos(it.first, it.second)
+        }.toSet().toTypedArray()
+
+        if (adjacentPartNumbers.size != 2) return null
+
+        return adjacentPartNumbers[0].value * adjacentPartNumbers[1].value
+    }
+
     // Returns null if not a part number
     fun extractPartNumber(row: Int, col: Int): Int? {
         val numberRegex = Regex("\\d")
@@ -63,7 +119,20 @@ fun main() {
         }
     }
 
-    println(answer)
+    println("Part 1: $answer")
+
+    var answer2 = 0
+
+    for (r in 0..<rows) {
+        for (c in 0..<cols) {
+            val ratio = extractGearRatio(r, c)
+            if (ratio != null) {
+                answer2 += ratio
+            }
+        }
+    }
+
+    println("Part 2: $answer2")
 }
 
 private const val SAMPLE_INPUT = """467..114..
