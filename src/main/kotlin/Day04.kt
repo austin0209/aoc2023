@@ -3,10 +3,12 @@ import kotlin.math.pow
 fun main() {
     val lines = INPUT.split("\n")
 
-    var answer = 0f
+    val cardInstances = IntArray(lines.count()) { 1 }
 
     for (l in lines) {
-        val numStrings = l.split(": ")[1].split(" | ")
+        val split = l.split(": ")
+        val id = split[0].split("\\s+".toRegex())[1].toInt()
+        val numStrings = split[1].split(" | ")
         val winningNums = numStrings[0].split("\\s+".toRegex()).mapNotNull { it.toIntOrNull() }
         val nums = numStrings[1].split("\\s+".toRegex()).mapNotNull { it.toIntOrNull() }
 
@@ -16,10 +18,13 @@ fun main() {
             if (n in winningNums) matches += 1
         }
 
-        if (matches > 0) {
-            answer += 2f.pow(matches - 1)
+        for (i in 1..matches) {
+            val copyId = id + i
+            cardInstances[copyId - 1] += cardInstances[id - 1]
         }
     }
+
+    val answer = cardInstances.sum()
 
     println(answer)
 }
