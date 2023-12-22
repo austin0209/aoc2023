@@ -45,19 +45,33 @@ fun main() {
     val split = INPUT.split("\n\n")
     val mappingInputs = split.subList(1, split.size)
     val mappings = mappingInputs.map { Mapping.fromInput(it) }
-    val seeds = split[0].split(": ")[1]
+    val seedInputs = split[0].split(": ")[1]
         .split("\\s+".toRegex())
         .map { it.toLong() }
 
-    val locations = seeds.map {
-        var answer = it
-        for (m in mappings) {
-            answer = m.get(answer)
-        }
-        answer
+    val seedRanges = mutableListOf<Pair<Long, Long>>()
+    for (i in seedInputs.indices step 2) {
+        seedRanges.add(Pair(seedInputs[i], seedInputs[i + 1]))
     }
 
-    println(locations.min())
+    // PLAN FOR PART 2:
+    // We need to merge all the mappings into one big mapping!
+    // We can do this by getting the overlaps through each mapping, and then
+    // Generating new range mappings based on those overlaps (???)
+
+    val minLocations = seedRanges.map {
+        val locations = mutableListOf<Long>()
+        for (seed in it.first..it.first + it.second) {
+            var answer = seed
+            for (m in mappings) {
+                answer = m.get(answer)
+            }
+            locations.add(answer)
+        }
+        locations.min()
+    }
+
+    println(minLocations.min())
 }
 
 private const val SAMPLE_INPUT = """seeds: 79 14 55 13
